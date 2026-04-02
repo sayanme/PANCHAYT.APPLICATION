@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panchayt</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="header">
+        <h1 class="title">Panchayt</h1>
+        <p class="subtitle">
+          Gate/Gym updates, party-time planner, and community rules (for flats/societies).
+        </p>
+      </header>
+
+      <nav class="tabs" aria-label="Navigation">
+        <button class="tab tab-active" type="button" data-tab="home">Today</button>
+        <button class="tab" type="button" data-tab="party">Party Planner</button>
+        <button class="tab" type="button" data-tab="rules">Rules</button>
+        <button class="tab" type="button" data-tab="settings">Settings</button>
+        <button class="tab" type="button" data-tab="notices">Notices</button>
+        <button class="tab" type="button" data-tab="help">Help Desk</button>
+      </nav>
+
+      <section id="tab-home" class="tab-panel">
+        <div class="grid">
+          <div class="card">
+            <div class="cardTop">
+              <h2 class="cardTitle">Gate Status</h2>
+              <span class="pill" id="gatePill">—</span>
+            </div>
+            <div class="value" id="gateValue">Loading…</div>
+            <div class="hint" id="gateHint">Will show countdown to closing.</div>
+          </div>
+
+          <div class="card">
+            <div class="cardTop">
+              <h2 class="cardTitle">Gym Status</h2>
+              <span class="pill pill-purple" id="gymPill">—</span>
+            </div>
+            <div class="value" id="gymValue">Loading…</div>
+            <div class="hint" id="gymHint">Will show countdown to closing.</div>
+          </div>
+        </div>
+
+        <div class="card cardWide" style="margin-top: 16px;">
+          <h2 class="cardTitle">Quick help</h2>
+          <div class="helpList">
+            <div class="helpItem">
+              <div class="helpKey">1.</div>
+              <div class="helpText">Choose your role in Party Planner.</div>
+            </div>
+            <div class="helpItem">
+              <div class="helpKey">2.</div>
+              <div class="helpText">Enter party start time + duration.</div>
+            </div>
+            <div class="helpItem">
+              <div class="helpKey">3.</div>
+              <div class="helpText">Panchayt tells you if it fits rules.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-party" class="tab-panel" hidden>
+        <div class="grid">
+          <div class="card">
+            <h2 class="cardTitle">Speaker/Party Planner</h2>
+
+            <label class="label" for="roleSelect">Your role</label>
+            <select id="roleSelect" class="input">
+              <option value="bachelors">Bachelor</option>
+              <option value="families">Family</option>
+            </select>
+
+            <label class="label" for="partyDate">Date</label>
+            <input id="partyDate" class="input" type="date" />
+
+            <label class="label" for="partyStart">Start time</label>
+            <input id="partyStart" class="input" type="time" />
+
+            <label class="label" for="partyDurationMin">Duration (minutes)</label>
+            <input
+              id="partyDurationMin"
+              class="input"
+              type="number"
+              min="0"
+              step="5"
+              placeholder="e.g. 90"
+            />
+
+            <div class="row">
+              <button id="planBtn" class="btn" type="button">Check</button>
+              <button id="planResetBtn" class="btn btn-secondary" type="button">Reset</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 class="cardTitle">Result</h2>
+            <div id="planResult" class="planResult">Enter details and click <b>Check</b>.</div>
+            <div class="divider"></div>
+            <div class="small" id="planDetails">
+              Allowed rules will be shown here.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-rules" class="tab-panel" hidden>
+        <div class="grid">
+          <div class="card">
+            <div class="cardTop">
+              <h2 class="cardTitle">Bachelor Rules</h2>
+              <span class="pill pill-blue">For bachelors</span>
+            </div>
+            <pre id="bachelorsRules" class="rulesPre"></pre>
+          </div>
+          <div class="card">
+            <div class="cardTop">
+              <h2 class="cardTitle">Family Rules</h2>
+              <span class="pill pill-purple">For families</span>
+            </div>
+            <pre id="familiesRules" class="rulesPre"></pre>
+          </div>
+        </div>
+        <div class="card cardWide" style="margin-top: 16px;">
+          <h2 class="cardTitle">Note</h2>
+          <p class="hint">
+            These rules are stored in your browser settings. Update them in <b>Settings</b>.
+          </p>
+        </div>
+      </section>
+
+      <section id="tab-settings" class="tab-panel" hidden>
+        <div class="grid">
+          <div class="card">
+            <h2 class="cardTitle">Society timings</h2>
+
+            <label class="label" for="gateCloseTime">Gate closes at</label>
+            <input id="gateCloseTime" class="input" type="time" />
+
+            <label class="label" for="gymCloseTime">Gym closes at</label>
+            <input id="gymCloseTime" class="input" type="time" />
+
+            <div class="divider"></div>
+
+            <h2 class="cardTitle">Speaker time window (global)</h2>
+            <label class="label" for="speakerAllowedFrom">Speakers allowed from</label>
+            <input id="speakerAllowedFrom" class="input" type="time" />
+
+            <div class="row">
+              <button id="saveTimingsBtn" class="btn" type="button">Save timings</button>
+              <button id="resetTimingsBtn" class="btn btn-secondary" type="button">
+                Reset defaults
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 class="cardTitle">Speaker limits by role</h2>
+
+            <div class="roleBox">
+              <h3 class="roleTitle">Bachelor</h3>
+              <label class="label" for="bMaxHours">Max duration (hours)</label>
+              <input id="bMaxHours" class="input" type="number" min="0" step="0.25" />
+
+              <label class="label" for="bCurfewEnd">Curfew ends at</label>
+              <input id="bCurfewEnd" class="input" type="time" />
+            </div>
+
+            <div class="roleBox">
+              <h3 class="roleTitle">Family</h3>
+              <label class="label" for="fMaxHours">Max duration (hours)</label>
+              <input id="fMaxHours" class="input" type="number" min="0" step="0.25" />
+
+              <label class="label" for="fCurfewEnd">Curfew ends at</label>
+              <input id="fCurfewEnd" class="input" type="time" />
+            </div>
+
+            <div class="row">
+              <button id="saveLimitsBtn" class="btn" type="button">Save limits</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card cardWide" style="margin-top: 16px;">
+          <h2 class="cardTitle">Rules text</h2>
+          <div class="grid grid2">
+            <div>
+              <label class="label" for="bachelorsRulesInput">Bachelor rules</label>
+              <textarea
+                id="bachelorsRulesInput"
+                class="textarea"
+                rows="10"
+              ></textarea>
+            </div>
+            <div>
+              <label class="label" for="familiesRulesInput">Family rules</label>
+              <textarea
+                id="familiesRulesInput"
+                class="textarea"
+                rows="10"
+              ></textarea>
+            </div>
+          </div>
+          <div class="row">
+            <button id="saveRulesBtn" class="btn" type="button">Save rules</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-notices" class="tab-panel" hidden>
+        <div class="grid">
+          <div class="card">
+            <h2 class="cardTitle">Add a notice</h2>
+            <label class="label" for="noticeTitle">Title</label>
+            <input id="noticeTitle" class="input" type="text" placeholder="e.g. Gym maintenance" />
+
+            <label class="label" for="noticeMessage">Message</label>
+            <textarea id="noticeMessage" class="textarea" rows="5" placeholder="Write details here..."></textarea>
+
+            <label class="label" for="noticeFor">For</label>
+            <select id="noticeFor" class="input">
+              <option value="all" selected>All residents</option>
+              <option value="bachelors">Bachelors</option>
+              <option value="families">Families</option>
+            </select>
+
+            <div class="row">
+              <button id="addNoticeBtn" class="btn" type="button">Add notice</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="row row-between">
+              <h2 class="cardTitle">Latest notices</h2>
+              <button id="clearNoticesBtn" class="btn btn-secondary" type="button">
+                Clear all
+              </button>
+            </div>
+            <ul id="noticeList" class="noticeList"></ul>
+            <div id="noticeEmpty" class="hint" style="margin-top: 10px;">No notices yet.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="tab-help" class="tab-panel" hidden>
+        <div class="grid">
+          <div class="card">
+            <div class="cardTop">
+              <h2 class="cardTitle">Chat: Raise an issue / request</h2>
+              <span class="pill">Local chatbot</span>
+            </div>
+
+            <label class="label" for="apartmentNo">Flat/House number</label>
+            <input
+              id="apartmentNo"
+              class="input"
+              type="text"
+              placeholder="e.g. A-101 / Flat 12 / House 9"
+              autocomplete="off"
+            />
+
+            <div class="divider"></div>
+
+            <div id="chatMessages" class="chatMessages" aria-live="polite"></div>
+
+            <div class="chatComposer">
+              <input
+                id="chatInput"
+                class="input chatInput"
+                type="text"
+                placeholder="Type your issue/request… (try: 'My fridge is not cooling')"
+                autocomplete="off"
+              />
+
+              <div class="chatButtons">
+                <input
+                  id="photoInput"
+                  class="fileInput"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                />
+
+                <button id="micBtn" class="btn btn-secondary btn-small" type="button">
+                  Speak
+                </button>
+
+                <button id="sendChatBtn" class="btn" type="button">Send</button>
+              </div>
+
+              <div id="attachmentHint" class="hint">
+                Upload photos (optional). Voice input will convert to text if supported.
+              </div>
+
+              <div class="small" id="chatHint" style="margin-top: 10px;">
+                Tip: After the bot shows a summary, reply <b>save</b> to store the ticket.
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="row row-between">
+              <h2 class="cardTitle">Saved tickets</h2>
+              <button id="clearTicketsBtn" class="btn btn-secondary btn-small" type="button">
+                Clear
+              </button>
+            </div>
+            <div id="ticketEmpty" class="hint" style="margin-top: 10px;">
+              No tickets yet.
+            </div>
+            <ul id="ticketList" class="ticketList" aria-label="Tickets list"></ul>
+
+            <div class="divider"></div>
+
+            <h2 class="cardTitle">Ticket details</h2>
+            <div id="ticketDetails" class="planResult">Select a ticket from the list.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
+
